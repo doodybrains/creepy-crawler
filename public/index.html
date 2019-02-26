@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <style>
+      video {
+        height: 60vh;
+        width: 60%;
+      }
+    </style>
+  </head>
+  <body>
+    <video id="gum-local" autoplay playsinline></video>
+  </body>
+  <script src="video.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="application/javascript">
+    const socket = io.connect();
+
+    socket.on('connect', function() {
+      console.log("Connected");
+    });
+
+    function sendit(evt, message) {
+      socket.emit(evt, message);
+    }
+
+    window.addEventListener('load', function() {
+      console.log("Window Loaded");
+      document.addEventListener('mousemove', function(e) {
+        sendit('event', {'event': 'mousemove', x: e.clientX, y: e.clientY});
+      });
+
+      document.addEventListener('click', function(e) {
+        sendit('event', {'event': 'click', x: e.clientX, y: e.clientY});
+      });
+    });
+
+  </script>
+</html>

@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <style>
+      html { box-sizing: border-box; }
+      *, *:before, *:after { box-sizing: inherit; }
+
+      body {
+        padding: 0 5px;
+        font-family: monospace;
+        background-color: springgreen;
+        color: white;
+        height: 100vh;
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
+
+      h1 {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        margin: 0;
+        font-size: 35px;
+      }
+
+      div {
+        background-color: mediumpurple;
+        position: absolute;
+        border-radius: 30%;
+        height: 4px;
+        width: 4px;
+        font-size: 30px;
+      }
+
+      /* div:after {
+        content: 'what is a mouse';
+        position: absolute;
+        top: 10px;
+        width: 10px;
+        color: chartreuse;
+        text-shadow: 0 0 2px #000;
+      } */
+    </style>
+  </head>
+  <body>
+
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="application/javascript">
+    const socket = io.connect();
+
+    socket.on('connect', function() {
+      console.log("Connected");
+      socket.emit('watch',{});
+    });
+
+    function getElement(data) {
+      let m = null;
+      if (document.getElementById(data.socket_id)) {
+        m = document.getElementById(data.socket_id);
+      } else {
+        m = document.createElement('div');
+        document.getElementsByTagName('body')[0].append(m);
+      }
+
+      return m;
+    }
+
+    window.addEventListener('load', function() {
+      console.log("Window Loaded");
+
+      socket.on('event', function(data) {
+        m = getElement(data);
+
+        if (data.event == "mousemove") {
+          m.style.top = data.y;
+          m.style.left = data.x;
+        }
+      });
+    });
+  </script>
+</html>
